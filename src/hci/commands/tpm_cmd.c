@@ -169,7 +169,10 @@ static int tpm_exec ( int argc, char **argv) {
 	uint8_t digest[sha1_algorithm.digestsize];
 
 	if ( ! tpm_present () )
+	{
+		printf ( "TPM not present\n");
 		return -ENODEV;
+	}
 
 	/* Parse options */
 	if ( ( rc = parse_options ( argc, argv, &tpm_cmd, &opts ) ) != 0 ) {
@@ -178,7 +181,8 @@ static int tpm_exec ( int argc, char **argv) {
 	}
 
 	/* Acquire image */
-	if ( ( rc = imgacquire ( argv[1], &image ) ) != 0 ) {
+	unsigned long timeout = 60;
+	if ( ( rc = imgacquire ( argv[1], timeout, &image ) ) != 0 ) {
 		printf ( "Unable to acquire image: %d\n", rc );
 		return rc;
 	}
