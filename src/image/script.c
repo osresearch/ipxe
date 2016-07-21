@@ -42,6 +42,9 @@ FILE_LICENCE ( GPL2_OR_LATER_OR_UBDL );
 #include <ipxe/shell.h>
 #include <usr/prompt.h>
 #include <ipxe/script.h>
+#include <ipxe/crypto.h>
+#include <ipxe/sha1.h>
+#include <ipxe/tpm.h>
 
 /** Offset within current script
  *
@@ -201,6 +204,15 @@ static int script_exec ( struct image *image ) {
 	 * doesn't throw us into an execution loop.
 	 */
 	unregister_image ( image );
+
+#ifdef TPM_CMD
+	/* Measure the script */
+	if ( tpm_present () ) {
+		uint8_t digest[sha1_algorithm.digestsize];
+		hash_image ( image, digest );
+		update_pcr ( 5, digest );
+	}
+#endif
 
 	/* Preserve state of any currently-running script */
 	saved_offset = script_offset;
