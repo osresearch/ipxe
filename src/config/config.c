@@ -281,6 +281,9 @@ REQUIRE_OBJECT ( ntp_cmd );
 #ifdef CERT_CMD
 REQUIRE_OBJECT ( cert_cmd );
 #endif
+#ifdef TPM_CMD
+REQUIRE_OBJECT ( tpm_cmd );
+#endif
 
 /*
  * Drag in miscellaneous objects
